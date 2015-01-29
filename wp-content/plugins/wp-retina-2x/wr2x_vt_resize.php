@@ -10,7 +10,7 @@ if ( !function_exists('wr2x_vt_resize') ) {
 	function wr2x_vt_resize( $file_path, $width, $height, $crop, $newfile ) {
 		if ( $crop == '1' ) {
 			$crop_params = true;
-		}
+		}//xxx test
 		else {
 			$crop_params = $crop;
 		}
