@@ -1,0 +1,22 @@
+{
+    "name": "jdpowered/oauth",
+    "description": "OAuth Implementation",
+    "keywords": ["OAuth"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonas Döbertin",
+            "email": "hallo@jonasdoebertin.net",
+            "homepage": "http://jd-powered.net",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "jdpowered\\OAuth\\": "src/"
+        }
+    }
+}
