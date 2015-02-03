@@ -10,8 +10,8 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 
-    <link href="css/custom.css" rel="stylesheet">
-    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <link href="utm-css/custom.css" rel="stylesheet">
+    <script type="text/javascript" src="utm-js/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 
