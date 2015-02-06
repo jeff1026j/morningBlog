@@ -313,6 +313,12 @@ $url = (!empty($_SERVER['HTTPS'])) ? "https://" . $_SERVER['SERVER_NAME'] . $_SE
 
 <br class="clear"/>
 
+<div class="rating" style="font-size: 12pt;">喜歡這位麥片女孩的介紹？給他幾顆星 <br/>
+<?php if(function_exists('the_ratings')) { the_ratings(); } ?>
+</div>
+
+<br class="clear"/>
+
 <style type="text/css">
 
 /* #### bootstrap Form #### */

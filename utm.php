@@ -44,20 +44,23 @@
         <body class="index">
                 <script type="text/javascript">
 
-                var medium_init = { '首頁Banner':'HomeBanner','文上banner' : 'A1_Banner', '文下banner' : 'A2_Banner', '文下alert' : 'inAlert','sidebar特別活動banner' : 'S1_Banner', 'sidebar下banner':'S2_Banner','文章內容關鍵字':'inArticle'};
-                var source = {'官方部落格' : 'official-blog','廣告' : 'FB1' , '粉絲頁' : 'FBPage', '電子報' : 'NewsLetter','新聞' : 'iHealthNews', 'GigaCircle' : 'GigaCircle',
-			      'Instagram'  : 'instagram' , 'PTT' : 'PTT'
+                var medium_init = { '首頁Banner':'HomeBanner','文上banner' : 'A1_Banner', 
+				'文下banner' : 'A2_Banner', '文下alert' : 'inAlert',
+			'sidebar特別活動banner' : 'S1_Banner', 'sidebar下banner':'S2_Banner',
+			'文章內容關鍵字':'inArticle'};
+                var source = {'官方部落格' : 'official-blog','廣告' : 'FB1' , '粉絲頁' : 'FBPage', 
+				'電子報' : 'NewsLetter','新聞' : 'iHealthNews', '其他' : 'Others'
 		};
+
                 var medium = { 'official-blog' : medium_init,
                                'FBPage' : { '早餐吃麥片':'FanPage', '其他免費': 'others'},
 			       'FB1' : { '廣告' : 'FB', '部落客':'blgr'},
                                'NewsLetter' : {'email':'email'},
                                'iHealthNews' : medium_init,
-			       'instagram' : {'官方':'official', '其他':'others'},
-			       'PTT' : {'PTT':'PTT'}
+			       'Others' : {'instagram':'instagram', 'GigaCircle':'gigacircle', 'PTT':'ptt', '免費部落客':'free-blogger'}
 								
                                         };
-                var campaignName = {'產品頁面':'', '類別頁':'Cat', '標籤' : 'Tab', '首頁' : 'Shop'};
+                var campaignName = {'產品頁面':'', '品牌頁面':'Brand', '產品類別頁':'Cat', '產品屬性標籤' : 'Tab', '首頁' : 'Shop'};
 
                 </script>
 
@@ -87,12 +90,13 @@
                                         </div>
 
 					<h2>要推薦什麼？</h2>
-					<input type="text" id="nameinput"  class="form-control" placeholder="產品title、類別名、標籤名">
+					<input type="text" id="nameinput"  class="form-control" placeholder="產品title、品牌名、類別名、標籤名">
                                         <div id='NameSelect'>
 
                                         </div>
 
 					<h2>廣告內容(好判別、另外加上自己名字方便 Track)：</h2>
+					<div style:"color:#ff0000;">盡量使用半形小寫，且不要有空格</div>
                                         <div id='ContentSelect'>
 						<input type="text" id="contentinput"  class="form-control" placeholder="ex: BenefitOfRedBean、或文章標題">
                                         </div>

@@ -399,3 +399,11 @@ $content = '<a href="' . get_permalink( $thumbnail->ID ) . '?utm_source=feedburn
 
 add_filter('the_excerpt_rss', 'featuredtoRSS');
 add_filter('the_content_feed', 'featuredtoRSS');
+
+
+add_filter( 'wp_image_editors', 'change_graphic_lib' );
+
+function change_graphic_lib($array) {	
+	return array( 'WP_Image_Editor_GD', 'WP_Image_Editor_Imagick' );
+}
+
