@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
+    <title>morning utm tool</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 
@@ -107,7 +107,7 @@
                                         </div>
 
 					<h2>廣告內容(好判別、另外加上自己名字方便 Track)：</h2>
-					<div style="color:#ff0000;">盡量使用半形小寫，且不要有空格</div>
+					<div style="color:#ff0000;">盡量使用半形，且不要有空格和「-」<br/>ex:<del>情人節文章-chris</del>  情人節文章chris</div>
                                         <div id='ContentSelect'>
 						<input type="text" id="contentinput"  class="form-control" placeholder="ex: BenefitOfRedBean、或文章標題">
                                         </div>
