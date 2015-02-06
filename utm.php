@@ -12,6 +12,7 @@
 
     <link href="utm-css/custom.css" rel="stylesheet">
     <script type="text/javascript" src="utm-js/jquery.min.js"></script>
+    <script type="text/javascript" src="utm-js/jquery.zclip.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 
@@ -39,6 +40,16 @@
             border-color: #BEFFBB;
             max-width: 500px;
         }
+	@media screen and (min-width: 600px) {
+		#previewHTML{
+		    position: fixed;
+		    top: 40px;
+		    z-index: 999;
+		    height: 500px;
+		    width: 25%;
+		    left: 2%;
+		}
+	}
     </style>
     </head>
         <body class="index">
@@ -96,7 +107,7 @@
                                         </div>
 
 					<h2>廣告內容(好判別、另外加上自己名字方便 Track)：</h2>
-					<div style:"color:#ff0000;">盡量使用半形小寫，且不要有空格</div>
+					<div style="color:#ff0000;">盡量使用半形小寫，且不要有空格</div>
                                         <div id='ContentSelect'>
 						<input type="text" id="contentinput"  class="form-control" placeholder="ex: BenefitOfRedBean、或文章標題">
                                         </div>
@@ -109,7 +120,10 @@
 
 					
                           </div>
-
+				<!-- 4:3 aspect ratio -->
+				<div class="embed-responsive embed-responsive-4by3">
+				<iframe id="previewHTML" class="embed-responsive-item" src=""></iframe>
+				</div>
                         </div>
                       </div>
                     </div>
@@ -166,8 +180,15 @@
 
                 });
 		
-		//generate result
-		$('#genButton').on('click',function(){
+		//generate result and copy it
+		$('#genButton').zclip({
+                        path:'utm-js/ZeroClipboard.swf',
+			copy:function(){//start copy function
+
+
+			
+
+	//	$('#genButton').on('click',function(){
 
 			//parse url
 			var resultURL = $('#urlinput').val();
@@ -180,14 +201,25 @@
 			//get utmsource
 			var utmsource = $('input[name=optionsRadios]:checked').val();
 			var utmmedium = $('input[name=mediumRadios]:checked').val();
-			var utmName = $('input[name=nameRadios]:checked').val()+'-'+$('#nameinput').val();
+			var utmName = $('input[name=nameRadios]:checked').val()+$('#nameinput').val();
 			var utmContent = today.getFullYear().toString()+(today.getMonth()+1).toString()+today.getDate().toString()+'-'+$('#contentinput').val();
 
 			var resultUrl = resultURL+'?utm_source=' + utmsource + '&utm_medium='+utmmedium+'&utm_content='+utmContent+'&utm_campaign='+utmName;
 
 			$('#resultText').text(resultUrl);
 
+			//update preview html window
+			$('#previewHTML').attr("src",resultUrl);
+			//window.open(resultUrl, 'test', config='height=500,width=500');
+
+			//Copied = $('#resultText').createTextRange();
+    			//Copied.execCommand("Copy");
+			
+			return resultUrl;
+			}//close copy function
 		});
+
+		
 
 		var namehtml = '';
                 var j = 0;
@@ -198,7 +230,21 @@
                 }
 		$("#NameSelect").html(namehtml);
 		$("#optionsRadios0").prop('checked',true); $("#optionsRadios0").click();
-                </script>
+
+/*
+		$(document).ready(function(){
+
+		    $('#genButton').zclip({
+		        path:'utm-js/ZeroClipboard.swf',
+		        copy:'xxxx'
+			//$('#resultText').text()
+		    });
+
+
+		});
+
+*/
+	</script>
         </body>
 </html>
 
