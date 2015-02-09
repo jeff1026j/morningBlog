@@ -45,7 +45,11 @@ $omc_top_menu = get_option_tree('omc_top_menu', $theme_options, false);
 	
 	<?php get_template_part('header-options');?>
 
-
+	<?php if (is_single()) {
+	$thumbnail_src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), "medium"  );
+echo '<meta property="og:image" content="' . $thumbnail_src[0] . '" />';
+	}
+	?>
 
 
 	

@@ -59,7 +59,7 @@
 				'文下banner' : 'A2_Banner', '文下alert' : 'inAlert',
 			'sidebar特別活動banner' : 'S1_Banner', 'sidebar下banner':'S2_Banner',
 			'文章內容關鍵字':'inArticle'};
-                var source = {'官方部落格' : 'official-blog','廣告' : 'FB1' , '粉絲頁' : 'FBPage', 
+                var source = {'官方部落格' : 'official-blog', '廣告' : 'FB1' , '粉絲頁' : 'FBPage', 
 				'電子報' : 'NewsLetter','新聞' : 'iHealthNews', '其他' : 'Others'
 		};
 
@@ -160,7 +160,7 @@
                 }
 
                 $("#SourceSelect").html(sourcehtml);
-                //select first button first~
+               //select first button first~
 //                $("#optionsRadios0").prop('checked',true); $("#optionsRadios0").click();
 
 		$('#SourceSelect :radio').on('click',function(){
@@ -177,47 +177,49 @@
 //                    console.log('xxxx: '+mediumhtml);
                     $("#MediumSelect").html(mediumhtml);
                     $("#mediumRadios0").prop('checked',true); $("#mediumRadios0").click();
+                    
+                    //re register zclip event
+                    removeZclipEvent();
+                    addZclipEvent();
 
                 });
-		
-		//generate result and copy it
-		$('#genButton').zclip({
-                        path:'utm-js/ZeroClipboard.swf',
-			copy:function(){//start copy function
+        function removeZclipEvent(){
+             $('#genButton').zclip('remove');    
+        }
+		function addZclipEvent(){
+    		//generate result and copy it
+	    	$('#genButton').zclip({
+                            path:'utm-js/ZeroClipboard.swf',
+			    copy:function(){//start copy function
 
+    			    //parse url
+        			var resultURL = $('#urlinput').val();
+	        		var searchIndex = resultURL.search("\\?");
+		        	if(searchIndex > -1){
+			        	resultURL = resultURL.substring(0,searchIndex);
+        			}
+	    		
+	    	    	//get utmsource
+    	    		var utmsource = $('input[name=optionsRadios]:checked').val();
+	    	    	var utmmedium = $('input[name=mediumRadios]:checked').val();
+		    	    var utmName = $('input[name=nameRadios]:checked').val()+$('#nameinput').val();
+    			    var utmContent = today.getFullYear().toString()+(today.getMonth()+1).toString()+today.getDate().toString()+'-'+$('#contentinput').val();
 
+        			var resultUrl = resultURL+'?utm_source=' + utmsource + '&utm_medium='+utmmedium+'&utm_content='+utmContent+'&utm_campaign='+utmName;
+
+	        		$('#resultText').text(resultUrl);
+
+		        	//update preview html window
+    			    $('#previewHTML').attr("src",resultUrl);
+    	    		//window.open(resultUrl, 'test', config='height=500,width=500');
+
+	    	    	//Copied = $('#resultText').createTextRange();
+    	    		//Copied.execCommand("Copy");
 			
-
-	//	$('#genButton').on('click',function(){
-
-			//parse url
-			var resultURL = $('#urlinput').val();
-			var searchIndex = resultURL.search("\\?");
-//			console.log('xx: '+searchIndex);
-			if(searchIndex > -1){
-				resultURL = resultURL.substring(0,searchIndex);
-			}
-			
-			//get utmsource
-			var utmsource = $('input[name=optionsRadios]:checked').val();
-			var utmmedium = $('input[name=mediumRadios]:checked').val();
-			var utmName = $('input[name=nameRadios]:checked').val()+$('#nameinput').val();
-			var utmContent = today.getFullYear().toString()+(today.getMonth()+1).toString()+today.getDate().toString()+'-'+$('#contentinput').val();
-
-			var resultUrl = resultURL+'?utm_source=' + utmsource + '&utm_medium='+utmmedium+'&utm_content='+utmContent+'&utm_campaign='+utmName;
-
-			$('#resultText').text(resultUrl);
-
-			//update preview html window
-			$('#previewHTML').attr("src",resultUrl);
-			//window.open(resultUrl, 'test', config='height=500,width=500');
-
-			//Copied = $('#resultText').createTextRange();
-    			//Copied.execCommand("Copy");
-			
-			return resultUrl;
-			}//close copy function
-		});
+    		    	return resultUrl;
+	    		    }//close copy function
+    		});
+        }
 
 		
 

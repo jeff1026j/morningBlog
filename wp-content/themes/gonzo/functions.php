@@ -407,3 +407,34 @@ function change_graphic_lib($array) {
 	return array( 'WP_Image_Editor_GD', 'WP_Image_Editor_Imagick' );
 }
 
+
+
+// Custom Next/Previous Page
+add_filter('wp_link_pages_args', 'wp_link_pages_args_prevnext_add');
+/**
+ * Add prev and next links to a numbered link list
+ */
+function wp_link_pages_args_prevnext_add($args)
+{
+    global $page, $numpages, $more, $pagenow;
+
+    if (!$args['next_or_number'] == 'next_and_number') 
+        return $args; # exit early
+
+    $args['next_or_number'] = 'number'; # keep numbering for the main part
+    if (!$more)
+        return $args; # exit early
+
+    if($page-1) # there is a previous page
+        $args['before'] .= _wp_link_page($page-1)
+            . $args['link_before']. $args['previouspagelink'] . $args['link_after'] . '</a>'
+        ;
+
+    if ($page<$numpages) # there is a next page
+        $args['after'] = _wp_link_page($page+1)
+            . $args['link_before'] . $args['nextpagelink'] . $args['link_after'] . '</a>'
+            . $args['after']
+        ;
+
+    return $args;
+}

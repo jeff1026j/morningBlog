@@ -1,7 +1,6 @@
 <?php
 // Loads the rating engine!
 $ratings = new gonzo_user_rating();
-
 get_header();
 // Start the loop
 if (have_posts()) : while (have_posts()) : the_post();
@@ -307,6 +306,17 @@ $url = (!empty($_SERVER['HTTPS'])) ? "https://" . $_SERVER['SERVER_NAME'] . $_SE
 
 
 
+<div style="margin-top: 45pt; font-size: 7pt;" class="pagination">
+<?php wp_link_pages(array(
+    'before' => '<p>' . __(''),
+    'after' => '</p>',
+    'next_or_number' => 'next_and_number', # activate parameter overloading
+    'nextpagelink' => __('下一頁'),
+    'previouspagelink' => __('上一頁'),
+    '<span>pagelink</span>' => '%',
+    'echo' => 1 )
+);
+endwhile; endif; ?></div>
 
 
 <?php if ( has_tag('麥片女孩') && (in_category('麥片女孩')) ) { ?>
@@ -481,7 +491,6 @@ input:invalid, textarea:invalid {
 <p>喜歡，按讚給我們穀粒（嚼嚼）</p>
 <div style="margin-bottom: 10px;" class="fb-like" data-href="<?php echo $url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div><br/>
 
-    <?php wp_link_pages(); endwhile; endif; ?>
 
 <br class="clear"/>
 
