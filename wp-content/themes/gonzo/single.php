@@ -125,6 +125,8 @@ $url = (!empty($_SERVER['HTTPS'])) ? "https://" . $_SERVER['SERVER_NAME'] . $_SE
 
 <div style="margin-bottom: 10px;" class="fb-like" data-href="<?php echo $url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div><br/>
 
+<!--<a href="http://www.morningshop.tw/edm/201502A13000001?utm_source=official-blog&utm_medium=A1_Banner&utm_content=2015213-過年優惠活動&utm_campaign=2015-Feb-Campaign健康過好年活動"><img src="http://i.imgur.com/Ilb5d2C.png?1" class="alignnone size-full wp-image-557"/></a><br/><br/>-->
+
     <?php if ($omc_criteria_display == 'b' || $omc_criteria_display == 'n' || $omc_criteria_display == '') {
         the_content();
     } ?>
@@ -319,11 +321,11 @@ $url = (!empty($_SERVER['HTTPS'])) ? "https://" . $_SERVER['SERVER_NAME'] . $_SE
 endwhile; endif; ?></div>
 
 
-<?php if ( has_tag('麥片女孩') && (in_category('麥片女孩')) ) { ?>
+<?php if ( has_tag('麥片女孩') || (in_category('麥片女孩')) ) { ?>
 
 <br class="clear"/>
 
-<div class="rating" style="font-size: 12pt;">喜歡這位麥片女孩的介紹？給他幾顆星 <br/>
+<div class="rating" style="font-size: 12pt; text-align:center;">喜歡這位麥片女孩的介紹 <br/><br/>
 <?php if(function_exists('the_ratings')) { the_ratings(); } ?>
 </div>
 
@@ -480,20 +482,28 @@ input:invalid, textarea:invalid {
 <input class="button" type="submit" name="submit" value="&#25552;&#20132;" id="ss-submit">
 
 </form>
-
 <?php } ?>
 
 
+<script>
+    (function( $ ) {
+      if ($(window).width() < 600) {
 
-<a class="shop-btn backshoplink" href="http://www.morningshop.tw?utm_source=official-blog&utm_medium=article-bottom&utm_campaign=mainsite-link" onclick="__gaTracker('send', 'event', 'mainsite-link', 'bottom', '<?php the_permalink(); ?> ');">回主站買麥片</a>
+	document.write('<a rel=\"nofollow\" target=\"_blank\" href=\"http://line.me/R/msg/text/?<?php the_title(); ?>%0D%0A<?php the_permalink(); ?>?utm_source=line&utm_medium=usershare&utm_content=<?php the_title(); ?>\"><img src=\"http://i.imgur.com/OBK27by.png\" width=\"100%\" height=\"auto\" alt=\"用LINE傳送\" /></a><br/><a href=\"http://www.facebook.com/sharer.php?u=<?php the_permalink(); ?>\" target=\"_blank\"><img src=\"http://i.imgur.com/XBIrh7q.png\" width=\"100%\" height=\"auto\" alt=\"用FB傳送\" /></a><br/><br/><a href=\"http://line.me/ti/p/%40rul1812v\" target=\"_blank\" rel=\"nofollow\"><img height=\"36\" border=\"0\" alt=\"好友人數\" width=\"100%\" height=\"auto\"  src=\"http://biz.line.naver.jp/line_business/img/btn/addfriends_zh-Hant.png\"></a><br class=\"clear\"/><br/>');
+
+     }
+    })(jQuery);
+</script>  
+
+
+<a class="shop-btn backshoplink" href="http://www.morningshop.tw?utm_source=official-blog&utm_medium=article-bottom&utm_campaign=mainsite-link&utm_content=<?php the_title(); ?>" onclick="__gaTracker('send', 'event', 'mainsite-link', 'bottom', '<?php the_permalink(); ?> ');">回主站買麥片</a>
 
 
 <p>喜歡，按讚給我們穀粒（嚼嚼）</p>
-<div style="margin-bottom: 10px;" class="fb-like" data-href="<?php echo $url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div><br/>
+<div style="margin-bottom: 10px;" class="fb-like" data-width="300" data-href="<?php echo $url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div><br/>
 
 
 <br class="clear"/>
-
 
 
 <div class="omc-authorbox">

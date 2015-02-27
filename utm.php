@@ -68,10 +68,10 @@
 			       'FB1' : { '廣告' : 'FB', '部落客':'blgr'},
                                'NewsLetter' : {'email':'email'},
                                'iHealthNews' : medium_init,
-			       'Others' : {'instagram':'instagram', 'GigaCircle':'gigacircle', 'PTT':'ptt', '免費部落客':'free-blogger'}
+			       'Others' : {'instagram':'instagram', 'GigaCircle':'gigacircle', 'PTT':'ptt', '免費部落客':'free-blogger', 'Line':'line'}
 								
                                         };
-                var campaignName = {'產品頁面':'', '品牌頁面':'Brand', '產品類別頁':'Cat', '產品屬性標籤' : 'Tab', '首頁' : 'Shop'};
+                var campaignName = {'產品頁面':'', '品牌頁面':'Brand', '活動頁面':'Camp', '產品類別頁':'Cat', '產品屬性標籤' : 'Tag', '首頁' : 'Shop'};
 
                 </script>
 
