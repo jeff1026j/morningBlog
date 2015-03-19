@@ -207,8 +207,11 @@
 
     			    //parse url
         			var resultURL = $('#urlinput').val();
-	        		var searchIndex = resultURL.search("\\?");
-                    //already has the GET parameter 
+                    //remove utm
+                    resultURL = resultURL.replace(/(&?)utm_.+?(&|$)+/ig, "");
+                    //console.log('1st :'+resultURL);
+                    //already has the GET parameter
+                    var searchIndex = resultURL.search("\\?");
 			      	resultURL = (searchIndex > -1)? resultURL+'&':resultURL+'?';
 	    		
 	    	    	//get utmsource
