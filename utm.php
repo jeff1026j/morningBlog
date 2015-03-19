@@ -55,24 +55,33 @@
         <body class="index">
                 <script type="text/javascript">
 
-                var medium_init = { '首頁Banner':'HomeBanner','文上banner' : 'A1_Banner', 
-				'文下banner' : 'A2_Banner', '文下alert' : 'inAlert',
-			'sidebar特別活動banner' : 'S1_Banner', 'sidebar下banner':'S2_Banner',
-			'文章內容關鍵字':'inArticle'};
+                var medium_init = {'文章內容關鍵字':'inArticle', 
+				   '文下alert' : 'inAlert', 
+                                   '首頁Banner':'HomeBanner',
+				   '文上banner' : 'A1_Banner', 
+				'文下banner' : 'A2_Banner',
+			'sidebar特別活動banner' : 'S1_Banner', 'sidebar下banner':'S2_Banner'
+		};
+
                 var source = {'官方部落格' : 'official-blog', '廣告' : 'FB1' , '粉絲頁' : 'FBPage', 
 				'電子報' : 'NewsLetter','新聞' : 'iHealthNews', '其他' : 'Others'
 		};
 
                 var medium = { 'official-blog' : medium_init,
-                               'FBPage' : { '早餐吃麥片':'FanPage', '其他免費': 'others'},
+                               'FBPage' : { '早餐吃麥片':'FanPage', '客服或留言': 'fb-reply', '其他免費': 'others'},
 			       'FB1' : { '廣告' : 'FB', '部落客':'blgr'},
                                'NewsLetter' : {'email':'email'},
                                'iHealthNews' : medium_init,
-			       'Others' : {'instagram':'instagram', 'GigaCircle':'gigacircle', 'PTT':'ptt', '免費部落客':'free-blogger', 'Line':'line'}
+			       'Others' : {'instagram':'instagram', 'GigaCircle':'gigacircle', 'PTT':'ptt', 
+			       '免費部落客':'free-blogger', 'Line（訊息/主頁/客服）':'line'}
 								
                                         };
                 var campaignName = {'產品頁面':'', '品牌頁面':'Brand', '活動頁面':'Camp', '產品類別頁':'Cat', '產品屬性標籤' : 'Tag', '首頁' : 'Shop'};
-
+		
+				var who = {'chris':'chris', 'elsa':'elsa', 'sandra':'sandra', 'jeff':'jeff' ,'chichi':'chichi', 'jpg':'jpg', 'jake':'jake' };
+				
+				
+		
                 </script>
 
                 <div class="container">
@@ -112,6 +121,10 @@
 						<input type="text" id="contentinput"  class="form-control" placeholder="ex: BenefitOfRedBean、或文章標題">
                                         </div>
 					
+
+					<h3>who are u</h3>
+					<div id="WhoSelect">
+					</div>
 					<br/><br/>
 					<button id="genButton" type="button" class="btn btn-success btn-lg">產生</button>
 					
@@ -195,17 +208,16 @@
     			    //parse url
         			var resultURL = $('#urlinput').val();
 	        		var searchIndex = resultURL.search("\\?");
-		        	if(searchIndex > -1){
-			        	resultURL = resultURL.substring(0,searchIndex);
-        			}
+                    //already has the GET parameter 
+			      	resultURL = (searchIndex > -1)? resultURL+'&':resultURL+'?';
 	    		
 	    	    	//get utmsource
     	    		var utmsource = $('input[name=optionsRadios]:checked').val();
 	    	    	var utmmedium = $('input[name=mediumRadios]:checked').val();
 		    	    var utmName = $('input[name=nameRadios]:checked').val()+$('#nameinput').val();
-    			    var utmContent = today.getFullYear().toString()+(today.getMonth()+1).toString()+today.getDate().toString()+'-'+$('#contentinput').val();
+    			    var utmContent = today.getFullYear().toString()+(today.getMonth()+1).toString()+today.getDate().toString()+'-'+$('#contentinput').val()+$('input[name=whoRadios]:checked').val();
 
-        			var resultUrl = resultURL+'?utm_source=' + utmsource + '&utm_medium='+utmmedium+'&utm_content='+utmContent+'&utm_campaign='+utmName;
+        			var resultUrl = resultURL+'utm_source=' + utmsource + '&utm_medium='+utmmedium+'&utm_content='+utmContent+'&utm_campaign='+utmName;
 
 	        		$('#resultText').text(resultUrl);
 
@@ -232,7 +244,19 @@
                 }
 		$("#NameSelect").html(namehtml);
 		$("#optionsRadios0").prop('checked',true); $("#optionsRadios0").click();
+		
+		
+		
+		var whohtml = '';
+                var j = 0;
+                for (var key in who) {
 
+                   whohtml = whohtml+'<div class="radio"><label><input type="radio" name="whoRadios" id="whoRadios'+j+'" value="'+who[key]+'">'+key+'</label></div>';
+                   j=j+1;
+                }
+                
+		$("#WhoSelect").html(whohtml);
+		
 /*
 		$(document).ready(function(){
 
@@ -246,6 +270,7 @@
 		});
 
 */
+
 	</script>
         </body>
 </html>

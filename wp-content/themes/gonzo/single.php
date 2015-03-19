@@ -105,15 +105,9 @@ $url = (!empty($_SERVER['HTTPS'])) ? "https://" . $_SERVER['SERVER_NAME'] . $_SE
 
         <div class="omc-article-top">
 
-            <p class="omc-date-time-inner <?php echo('omc-format-' . $format);?>">
-                <b><?php _e('', 'gonzo'); ?></b> <?php the_time('F jS, Y') ?> |
-                <em><?php _e('', 'gonzo'); ?> <?php the_author() ?></em></p>
             
-            <?php if ($omc_comment_type === 'fb') { ?>
-            	<span class="omc-comment-count"><fb:comments-count href=<?php echo $url; ?>></fb:comments-count></span>
-            <?php } else { ?>    
-                <span class="omc-comment-count"><?php comments_number('0', '1', '%'); ?></span>
-            <?php } ?>    
+            <span class="omc-comment-count"><fb:comments-count href=<?php echo $url; ?>></fb:comments-count></span>
+            
         </div>
         <!-- /omc-article-top-->
 
@@ -307,7 +301,6 @@ $url = (!empty($_SERVER['HTTPS'])) ? "https://" . $_SERVER['SERVER_NAME'] . $_SE
     } ?>
 
 
-
 <div style="margin-top: 45pt; font-size: 7pt;" class="pagination">
 <?php wp_link_pages(array(
     'before' => '<p>' . __(''),
@@ -319,6 +312,11 @@ $url = (!empty($_SERVER['HTTPS'])) ? "https://" . $_SERVER['SERVER_NAME'] . $_SE
     'echo' => 1 )
 );
 endwhile; endif; ?></div>
+
+
+
+
+
 
 
 <?php if ( has_tag('麥片女孩') || (in_category('麥片女孩')) ) { ?>
@@ -466,20 +464,41 @@ input:invalid, textarea:invalid {
 
 <form style="display: none;" class="bootstrap-frm" role="form" action="https://docs.google.com/forms/d/1GD9I_falMSbJNF_JhDWzvPGO23yYhXuImdj2TctCpV4/formResponse" method="POST" id="ss-form" target="_blank" onsubmit="">
 
-<h3>徵麥片女孩！</h3>
-<p>當麥片女孩可以免費試吃最新麥片，還有什麼好處？<br/>來信我們會告訴妳！</p>
-<label>姓名/暱稱 * </label>
+<h3>你也可以麥片女孩！</h3>
+<p>當麥片女孩就可以免費試吃最新麥片，<br/>還不快填下面資料！（*為必填欄位）</p>
+
+<label>姓名/暱稱 * （格式為 陳家翔 / Chris）</label>
 <input placeholder="" class="form-control" type="text" name="entry.1794029648" value="" class="ss-q-short" id="entry.1794029648" dir="auto" aria-label="姓名/暱稱" aria-required="true" required="" title="">
-<div class="error-message"></div> <br/>
+ <br/>
 
 <label>Email * </label>
 <input placeholder="" class="form-control" type="text" name="entry_680751096" value="" class="ss-q-short" id="entry_680751096" dir="auto" aria-label="Email  請輸入符合模式的內容" aria-required="true" required="" title=""><br/>
 
-<input type="hidden" name="draftResponse" value="[,,&quot;-530196277049099324&quot;]">
+<label>電話 * （格式為 09xx-xxx-xxx）</label>
+<input type="text" name="entry.506357596" value="" class="ss-q-short" id="entry_506357596" dir="auto" aria-label="電話 格式為 09xx-xxx-xxx " aria-required="true" required="" title=""><div class="error-message" id="378790941_errorMessage"></div><br/>
+
+<label>地址 * （收到麥片的地址）</label>
+<input type="text" name="entry.1171745469" value="" class="ss-q-short" id="entry_1171745469" dir="auto" aria-label="地址 收到麥片的地址 " aria-required="true" required="" title="">
+<div class="error-message" id="1403136732_errorMessage"></div><br/>
+
+<label>試吃的麥片 * （<a href="http://www.morningshop.tw/" target="_blank">在官網上</a>選擇妳想寫開箱文的產品網址，格式如下）</label>
+<input type="text" name="entry.1340024935" value="http://www.morningshop.tw/item/201412AM090000360/A19639" class="ss-q-short" id="entry_1340024935" dir="auto" aria-label="想試吃的麥片 在官網選擇妳想寫開箱文的產品網址 ex. http://www.morningshop.tw/item/201412AM090000360/A19639 " aria-required="true" required="" title="">
+<div class="error-message" id="276738255_errorMessage"></div><br/>
+
+<label>臉書或 instagram 網址</label>
+<input type="text" name="entry.1764760435" value="" class="ss-q-short" id="entry_1764760435" dir="auto" aria-label="臉書或 instagram 網址  " title="">
+<div class="error-message" id="1693795329_errorMessage"></div><br/>
+
+<input type="hidden" name="draftResponse" value=""[,,&quot;-7966784405693144181&quot;]">
 <input type="hidden" name="pageHistory" value="0">
 <input type="hidden" name="fromEmail" value="false">
-<input type="hidden" name="fbzx" value="-530196277049099324">
+<input type="hidden" name="fbzx" value="-7966784405693144181">
 <input class="button" type="submit" name="submit" value="&#25552;&#20132;" id="ss-submit">
+
+<br/><br/>
+
+送出資料後我們會盡快聯絡您哦！<br/>
+請耐心等候～
 
 </form>
 <?php } ?>

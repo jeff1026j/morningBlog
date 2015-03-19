@@ -35,8 +35,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 define( 'WP_POSTRATINGS_VERSION', 1.80 );
 
 ### Define Image Extension
-define('RATINGS_IMG_EXT', 'gif');
-//define('RATINGS_IMG_EXT', 'png');
+//define('RATINGS_IMG_EXT', 'gif');
+define('RATINGS_IMG_EXT', 'png');
 
 ### Create Text Domain For Translations
 add_action( 'plugins_loaded', 'postratings_textdomain' );
@@ -581,8 +581,9 @@ function process_ratings() {
 		// Verify Referer
 		if(!check_ajax_referer('postratings_'.$post_id.'-nonce', 'postratings_'.$post_id.'_nonce', false))
 		{
-			_e('Failed To Verify Referrer', 'wp-postratings');
-			exit();
+			//_e('Failed To Verify Referrer', 'wp-postratings');
+			_e('', 'wp-postratings');
+			//exit();
 		}
 
 		if($rate > 0 && $post_id > 0 && check_allowtorate()) {
@@ -649,7 +650,8 @@ function process_ratings() {
 					exit();
 				} // End if($post)
 			} else {
-				printf(__('You Had Already Rated This Post. Post ID #%s.', 'wp-postratings'), $post_id);
+				//printf(__('You Had Already Rated This Post. Post ID #%s.', 'wp-postratings'), $post_id);
+				printf(__('你已經投過這篇%s.', 'wp-postratings'), '文章');
 				exit();
 			}// End if(!$rated)
 		} // End if($rate && $post_id && check_allowtorate())
