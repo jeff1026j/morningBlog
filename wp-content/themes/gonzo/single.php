@@ -117,7 +117,9 @@ $url = (!empty($_SERVER['HTTPS'])) ? "https://" . $_SERVER['SERVER_NAME'] . $_SE
 
 <h1 class="omc-post-heading-<?php echo $format;?>"><?php the_title();?></h1>
 
-<div style="margin-bottom: 10px;" class="fb-like" data-href="<?php echo $url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div><br/>
+<div style="float:left;" class="g-plusone" data-size="tall" href="<?php the_permalink(); ?>"></div>
+
+<div style="margin-bottom: 30px; margin-left: 10px;" class="fb-like" data-href="<?php echo $url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div><br/>
 
 <!--<a href="http://www.morningshop.tw/edm/201502A13000001?utm_source=official-blog&utm_medium=A1_Banner&utm_content=2015213-過年優惠活動&utm_campaign=2015-Feb-Campaign健康過好年活動"><img src="http://i.imgur.com/Ilb5d2C.png?1" class="alignnone size-full wp-image-557"/></a><br/><br/>-->
 
@@ -471,7 +473,7 @@ input:invalid, textarea:invalid {
 <input placeholder="" class="form-control" type="text" name="entry.1794029648" value="" class="ss-q-short" id="entry.1794029648" dir="auto" aria-label="姓名/暱稱" aria-required="true" required="" title="">
  <br/>
 
-<label>Email * </label>
+<label>Email * （請填寫正確，我們將會以此信箱與您聯絡）</label>
 <input placeholder="" class="form-control" type="text" name="entry_680751096" value="" class="ss-q-short" id="entry_680751096" dir="auto" aria-label="Email  請輸入符合模式的內容" aria-required="true" required="" title=""><br/>
 
 <label>電話 * （格式為 09xx-xxx-xxx）</label>
@@ -488,6 +490,15 @@ input:invalid, textarea:invalid {
 <label>臉書或 instagram 網址</label>
 <input type="text" name="entry.1764760435" value="" class="ss-q-short" id="entry_1764760435" dir="auto" aria-label="臉書或 instagram 網址  " title="">
 <div class="error-message" id="1693795329_errorMessage"></div><br/>
+
+
+
+<label>授權範圍 *（<a href="https://docs.google.com/document/d/1HOj-KuP7AmJz25-q0vIPPtnPK4D0VmIuZPJK2plpnxY/edit?usp=sharing" rel="nofollow" target="_blank">本司將擁有文字及照片修改後使用其內容至該產品配合平台之權利</a>）</label>
+<br/>
+<input type="checkbox" name="entry.120718572" value="同意" id="group_120718572_1" role="checkbox" class="ss-q-checkbox" aria-required="true"> <span>同意 （需勾選才能參加）</span>
+<div class="error-message" id="297045330_errorMessage"></div>
+<br/>
+
 
 <input type="hidden" name="draftResponse" value=""[,,&quot;-7966784405693144181&quot;]">
 <input type="hidden" name="pageHistory" value="0">
@@ -519,11 +530,25 @@ input:invalid, textarea:invalid {
 
 
 <p>喜歡，按讚給我們穀粒（嚼嚼）</p>
-<div style="margin-bottom: 10px;" class="fb-like" data-width="300" data-href="<?php echo $url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div><br/>
+
+<!-- 將這個標記放在標頭中，或放在內文結尾標記前面。 -->
+<script src="https://apis.google.com/js/platform.js" async defer>
+  {lang: 'zh-TW'}
+</script>
+
+<div class="g-plusone" data-annotation="inline" href="<?php the_permalink(); ?>" data-width="300"></div>
+
+<div style="margin-bottom: 10px;" class="fb-like" data-width="300" data-href="<?php echo $url; ?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+
+
+
+<br/>
 
 
 <br class="clear"/>
 
+<!--<h3>拍麥片，抽好禮活動！</h3>
+<a href="http://bit.ly/1CFfOgb" target="_blank"><img class="alignnone size-medium wp-image-748" src="http://i2.wp.com/blog.morningshop.tw/wp-content/uploads/2015/03/11065988_10203159687187843_1924029227_o.jpg?fit=620%2C620"/></a>-->
 
 <div class="omc-authorbox">
 

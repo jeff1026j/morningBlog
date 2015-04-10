@@ -22,6 +22,7 @@ function wr2x_admin_head() {
 		/* GENERATE RETINA IMAGES ACTION */
 
 		var current;
+		var maxPhpSize = <?php echo (int)ini_get('upload_max_filesize') * 1000000; ?>;
 		var ids = [];
 		var ajax_action = "generate"; // generate | delete
 	
@@ -165,8 +166,9 @@ function wr2x_admin_head() {
 			if (count < 0) {
 				return;
 			}
-			var wr2x_replace = jQuery(evt.toElement).parent().hasClass('wr2x-fullsize-replace');
-			var wr2x_upload = jQuery(evt.toElement).parent().hasClass('wr2x-fullsize-retina-upload');
+
+			var wr2x_replace = jQuery(evt.target).parent().hasClass('wr2x-fullsize-replace');
+			var wr2x_upload = jQuery(evt.target).parent().hasClass('wr2x-fullsize-retina-upload');
 
 			function wr2x_handleReaderLoad(evt) {
 				var attachmentId = evt.target.attachmentId;
@@ -218,8 +220,14 @@ function wr2x_admin_head() {
 				});
 			}
 
-			jQuery(evt.target).parents('td').addClass('wr2x-loading-file');
 			var file = files[0];
+			if (file.size > maxPhpSize) {
+				jQuery(this).removeClass('wr2x-hover-drop');
+				alert( "Your PHP configuration only allows file upload of a maximum of " + (maxPhpSize / 1000000) + "MB." );
+				return;
+			}
+
+			jQuery(evt.target).parents('td').addClass('wr2x-loading-file');
 			var reader = new FileReader();
 			reader.filename = file.name;
 			reader.attachmentId = jQuery(evt.target).parents('.wr2x-file-row').attr('postid');
@@ -478,7 +486,7 @@ function wr2x_check_get_ajax_uploaded_file() {
 	
 	if ( $tmpfname == FALSE ) {
 
-		$tmpdir = sys_get_temp_dir();
+		$tmpdir = get_temp_dir();
 		if ( !is_writable( $tmpdir ) )
 			echo json_encode( array(
 				'success' => false,

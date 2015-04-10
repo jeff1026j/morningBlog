@@ -3,7 +3,7 @@
  * Plugin Name: Tumblr Crosspostr
  * Plugin URI: https://github.com/meitar/tumblr-crosspostr/#readme
  * Description: Automatically crossposts to your Tumblr blog when you publish a post on your WordPress blog.
- * Version: 0.7.22
+ * Version: 0.8.2
  * Author: Meitar Moscovitz
  * Author URI: http://Cyberbusking.org/
  * Text Domain: tumblr-crosspostr
@@ -34,8 +34,9 @@ class Tumblr_Crosspostr {
         // Template tag actions
         add_action($this->prefix . '_reblog_key', 'tumblr_reblog_key');
 
-        add_filter('post_row_actions', array($this, 'addTumblrPermalinkRowAction'), 10, 2);
+        add_filter('post_row_actions', array($this, 'addPostRowAction'), 10, 2);
         add_filter('plugin_row_meta', array($this, 'addPluginRowMeta'), 10, 2);
+        add_filter('syn_add_links', array($this, 'addSyndicatedLinks'));
 
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
 
@@ -99,6 +100,18 @@ class Tumblr_Crosspostr {
             }
         }
         update_option($this->prefix . '_settings', $new_opts);
+    }
+
+    /**
+     * Implements rel-syndication for POSSE as expected by the
+     * Syndication Links plugin for WordPress.
+     *
+     * @see https://wordpress.org/plugins/syndication-links/
+     * @see http://indiewebcamp.com/rel-syndication
+     */
+    public function addSyndicatedLinks ($urls) {
+        $urls[] = $this->getSyndicatedAddress(get_the_id());
+        return $urls;
     }
 
     public function showMissingConfigNotice () {
@@ -231,15 +244,19 @@ END_HTML;
         $screen->set_help_sidebar($screen->get_help_sidebar() . $sidebar);
     }
 
-    public function addTumblrPermalinkRowAction ($actions, $post) {
-        $tumblr_id = get_post_meta($post->ID, 'tumblr_post_id', true);
-        if ($tumblr_id) {
-            $base_hostname = get_post_meta($post->ID, 'tumblr_base_hostname', true);
-            if (empty($base_hostname)) { // fallback to default blog domain
-                $options = get_option($this->prefix . '_settings');
-                $base_hostname = $options['default_hostname'];
-            }
-            $actions['view_on_tumblr'] = '<a href="http://' . $base_hostname . '/' . $tumblr_id . '">' . esc_html__('View post on Tumblr', 'tumblr-crosspostr') . '</a>';
+    private function getSyndicatedAddress ($post_id) {
+        $url = '';
+        if ($id = get_post_meta($post_id, 'tumblr_post_id', true)) {
+            $base_hostname = $this->getTumblrBasename($post_id);
+            $url .= "http://{$base_hostname}/post/{$id}";
+        }
+        return $url;
+    }
+
+    public function addPostRowAction ($actions, $post) {
+        $id = get_post_meta($post->ID, 'tumblr_post_id', true);
+        if ($id) {
+            $actions['view_on_tumblr'] = '<a href="' . $this->getSyndicatedAddress($post->ID) . '">' . esc_html__('View post on Tumblr', 'tumblr-crosspostr') . '</a>';
         }
         return $actions;
     }
@@ -465,6 +482,17 @@ END_HTML;
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) { return; }
         if (!$this->isConnectedToService()) { return; }
 
+        // Only crosspost regular posts unless asked to cross-post other types.
+        $options = get_option($this->prefix . '_settings');
+        $post_types = array('post');
+        if (!empty($options['post_types'])) {
+            $post_types = array_merge($post_types, $options['post_types']);
+        }
+        $post_types = apply_filters($this->prefix . '_save_post_types', $post_types);
+        if (!in_array(get_post_type($post_id), $post_types)) {
+            return;
+        }
+
         if (isset($_POST[$this->prefix . '_use_excerpt'])) {
             update_post_meta($post_id, $this->prefix . '_use_excerpt', 1);
         } else {
@@ -492,6 +520,11 @@ END_HTML;
 //                $prepared_post->params['tweet'] = stripslashes_deep($prepared_post->params['tweet']);
 //            }
             $prepared_post->params['tweet'] = stripslashes_deep($prepared_post->params['tweet']);
+
+            $prepared_post = apply_filters($this->prefix . '_prepared_post', $prepared_post);
+            // We still have a post, right? in case someone forgets to return
+            if (empty($prepared_post)) { return; }
+
             $data = $this->crosspostToTumblr($prepared_post->base_hostname, $prepared_post->params, $prepared_post->tumblr_id);
             if (empty($data->response->id)) {
                 $msg = esc_html__('Crossposting to Tumblr failed.', 'tumblr-crosspostr');
@@ -531,11 +564,13 @@ END_HTML;
             } else {
                 update_post_meta($post_id, 'tumblr_post_id', $data->response->id);
                 if ($prepared_post->params['state'] === 'published') {
-                    $url = 'http://' . $this->getTumblrBasename($post_id) . '/post/' . get_post_meta($post_id, 'tumblr_post_id', true);
                     $this->addAdminNotices(
-                        esc_html__('Post crossposted.', 'tumblr-crosspostr') . ' <a href="' . $url . '">' . esc_html__('View post on Tumblr', 'tumblr-crosspostr') . '</a>'
+                        esc_html__('Post crossposted.', 'tumblr-crosspostr') . ' <a href="' . $this->getSyndicatedAddress($post_id) . '">' . esc_html__('View post on Tumblr', 'tumblr-crosspostr') . '</a>'
                     );
-                    if ($msg = $this->maybeCaptureDebugOf($data)) { $this->addAdminNotices($msg); }
+                    if ($msg = $this->maybeCaptureDebugOf($data)) {
+                        $msg = $this->maybeCaptureDebugOf($prepared_post) . '<br /><br />' . $msg;
+                        $this->addAdminNotices($msg);
+                    }
                 }
             }
         }
@@ -716,13 +751,11 @@ END_HTML;
                 // fall through
             case 'aside':
             default:
-                $post_img = '<a href="' . get_permalink( $thumbnail->ID ) . '?utm_source=tumblr&utm_medium=sync&utm_content=文章圖片" target="_blank">' . get_the_post_thumbnail( $post->ID, 'medium', array( 'style' => 'margin-bottom: 15px;' ) ) . '</a><br/> ';
                 $r['body'] = ($e)
-                    ? $post_img .'<br/>'.apply_filters('the_excerpt', $post_excerpt)
+                    ? apply_filters('the_excerpt', $post_excerpt)
                     : apply_filters('the_content', $post_body);
                 break;
         }
-
         return $r;
     }
 
@@ -811,6 +844,7 @@ END_HTML;
                     }
                 break;
                 case 'exclude_categories':
+                case 'post_types':
                 case 'import_to_categories':
                     $safe_v = array();
                     foreach ($v as $x) {
@@ -871,13 +905,19 @@ END_HTML;
     }
 
     public function addMetaBox ($post) {
-        add_meta_box(
-            'tumblr-crosspostr-meta-box',
-            __('Tumblr Crosspostr', 'tumblr-crosspostr'),
-            array($this, 'renderMetaBox'),
-            'post',
-            'side'
-        );
+        $options = get_option($this->prefix . '_settings');
+        if (empty($options['post_types'])) { $options['post_types'] = array(); }
+        $options['post_types'][] = 'post';
+        $options['post_types'] = apply_filters($this->prefix . '_meta_box_post_types', $options['post_types']);
+        foreach ($options['post_types'] as $cpt) {
+            add_meta_box(
+                'tumblr-crosspostr-meta-box',
+                __('Tumblr Crosspostr', 'tumblr-crosspostr'),
+                array($this, 'renderMetaBox'),
+                $cpt,
+                'side'
+            );
+        }
     }
 
     private function isConnectedToService () {
@@ -908,7 +948,7 @@ END_HTML;
         if ('publish' === $post->post_status && $tumblr_id) {
 ?>
 <p>
-    <a href="http://<?php print esc_attr($d);?>/<?php print esc_attr($tumblr_id);?>" class="button button-small"><?php esc_html_e('View post on Tumblr', 'tumblr-crosspostr');?></a>
+    <a href="<?php print esc_attr($this->getSyndicatedAddress($post->ID));?>" class="button button-small"><?php esc_html_e('View post on Tumblr', 'tumblr-crosspostr');?></a>
 </p>
 <?php
         }
@@ -985,6 +1025,8 @@ END_HTML;
             wp_die(__('You do not have sufficient permissions to access this page.', 'tumblr-crosspostr'));
         }
         $options = get_option($this->prefix . '_settings');
+        if (empty($options['post_types'])) { $options['post_types'] = array(); }
+        $options['post_types'][] = 'post';
         if (isset($_GET['disconnect']) && wp_verify_nonce($_GET[$this->prefix . '_nonce'], 'disconnect_from_tumblr')) {
             $this->disconnectFromService();
 ?>
@@ -1078,7 +1120,7 @@ END_HTML;
         </tr>
         <tr>
             <th>
-                <label for="<?php esc_attr_e($this->prefix);?>_exclude_categories"><?php esc_html_e('Do not crosspost entries in these categories:');?></label>
+                <label for="<?php esc_attr_e($this->prefix);?>_exclude_categories"><?php esc_html_e('Do not crosspost entries in these categories:', 'tumblr-crosspostr');?></label>
             </th>
             <td>
                 <ul id="<?php esc_attr_e($this->prefix);?>_exclude_categories">
@@ -1133,6 +1175,29 @@ END_HTML;
             <td>
                 <input type="checkbox" <?php if (isset($options['use_excerpt'])) : print 'checked="checked"'; endif; ?> value="1" id="<?php esc_attr_e($this->prefix);?>_use_excerpt" name="<?php esc_attr_e($this->prefix);?>_settings[use_excerpt]" />
                 <label for="<?php esc_attr_e($this->prefix);?>_use_excerpt"><span class="description"><?php esc_html_e('When enabled, the excerpts (as opposed to the body) of your WordPress posts will be used as the main content of your Tumblr posts. Useful if you prefer to crosspost summaries instead of the full text of your entires to Tumblr by default. This can be overriden on a per-post basis, too.', 'tumblr-crosspostr');?></span></label>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <label for="<?php esc_attr_e($this->prefix);?>_post_types"><?php esc_html_e('Crosspost the following post types:', 'tumblr-crosspostr');?></label>
+            </th>
+            <td>
+                <ul id="<?php esc_attr_e($this->prefix);?>_post_types">
+                <?php foreach (get_post_types(array('public' => true)) as $cpt) : ?>
+                    <li>
+                        <label>
+                            <input
+                                type="checkbox"
+                                <?php if (isset($options['post_types']) && in_array($cpt, $options['post_types'])) : print 'checked="checked"'; endif;?>
+                                <?php if ('post' === $cpt) { print 'disabled="disabled"'; } ?>
+                                value="<?php esc_attr_e($cpt);?>"
+                                name="<?php esc_attr_e($this->prefix);?>_settings[post_types][]">
+                            <?php print esc_html($cpt);?>
+                        </label>
+                    </li>
+                <?php endforeach;?>
+                </ul>
+                <p class="description"><?php print sprintf(esc_html__('Choose which %1$spost types%2$s you want to crosspost. Not all post types can be crossposted safely, but many can. If you are not sure about a post type, leave it disabled. Plugin authors may create post types that are crossposted regardless of the value of this setting. %3$spost%4$s post types are always enabled.', 'tumblr-crosspostr'), '<a href="https://codex.wordpress.org/Post_Types">', '</a>', '<code>', '</code>');?></p>
             </td>
         </tr>
         <tr>
@@ -1360,8 +1425,38 @@ END_HTML;
         }
     }
 
+    /**
+     * There's a frustrating bug in PHP? In WordPress? That causes get_posts()
+     * to always return an empty array when run in Cron if the PHP version is
+     * less than 5.4-ish. Check for that and workaround if necessary.
+     *
+     * @see https://wordpress.org/support/topic/get_posts-returns-no-results-when-run-via-cron
+     */
+    private function crosspostExists ($tumblr_id) {
+        // If we're running on PHP >= 5.4, use WordPress's built-in function.
+        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
+            return get_posts(array(
+                'meta_key' => 'tumblr_post_id',
+                'meta_value' => $tumblr_id,
+                'fields' => 'ids'
+            ));
+        }
+        global $wpdb;
+        return $wpdb->get_col($wpdb->prepare(
+            "
+            SELECT post_id FROM {$wpdb->postmeta}
+            WHERE meta_key='%s' AND meta_value='%s'
+            ",
+            'tumblr_post_id',
+            $tumblr_id
+        ));
+    }
+
     public function syncFromTumblrBlog ($base_hostname) {
         $options = get_option($this->prefix . '_settings');
+        if (!empty($options['debug'])) {
+            error_log(sprintf(esc_html__('Entering Tumblr Sync routine for %s', 'tumblr-crosspostr'), $base_hostname));
+        }
         if (!isset($options['last_synced_ids'])) {
             $options['last_synced_ids'] = array();
         }
@@ -1374,38 +1469,38 @@ END_HTML;
         $ids_synced = array(0); // Init with 0
         $offset = 0;
         $limit = 50;
-        $num_posts_to_get = 0;
-        // If we never synced, trawl through entire Tumblr archive.
-        if (0 === $latest_synced_id) {
-            $info = $this->tumblr->getBlogInfo($base_hostname);
-            $num_posts_to_get = $info->posts; // get all of them
-        } else {
-            $num_posts_to_get = $limit * 2; // Just get the last 2 batches.
-        }
-        $i = 0;
-        while ($i < $num_posts_to_get) {
+        // This loop either:
+        // * Trawls through the entire blog (if $latest_synced_id is 0), or
+        // * only tries to sync the latest two batches of posts
+        do {
             $resp = $this->tumblr->getPosts($base_hostname, array('offset' => $offset, 'limit' => $limit));
-            // If there aren't as many posts as we're trying to get,
-            if ($resp->total_posts <= $num_posts_to_get) {
-                // reset the loop condition so we only try getting
-                // as many posts that actually exist.
-                $num_posts_to_get = $resp->total_posts;
-            }
             $posts = $resp->posts;
-            foreach (array_reverse($posts) as $post) { // "older" posts first
-                $preexisting_posts = get_posts(array(
-                    'meta_key' => 'tumblr_post_id',
-                    'meta_value' => $post->id
-                ));
-                if (empty($preexisting_posts)) {
+            foreach ($posts as $post) {
+                $preexisting_posts = $this->crosspostExists($post->id);
+                if (!empty($options['debug'])) {
+                    error_log(sprintf(
+                        _n('Found %s preexisting post for Tumblr ID', 'Found %s preexisting posts for Tumblr ID', count($preexisting_posts), 'tumblr-crosspostr') . ' %s (%s)',
+                        count($preexisting_posts),
+                        $post->id,
+                        implode(',', $preexisting_posts)
+                    ));
+                }
+                if (in_array($post->id, $ids_synced)) {
+                    error_log("Haven't we already sync'ed this Tumblr post? {$post->id}");
+                } else if (empty($preexisting_posts)) {
                     if ($this->importPostFromTumblr($post)) {
                         $ids_synced[] = $post->id;
                     }
                 }
-                $i++; // in foreach cuz we're counting posts
             }
-            $offset = $offset + $limit; // Set up next fetch.
-        }
+            $offset = ($limit + $offset);
+            if (0 !== $latest_synced_id && $offset >= $limit * 2) {
+                if (!empty($options['debug'])) {
+                    error_log(esc_html__('Previously synced, stopping.', 'tumblr-crosspostr'));
+                }
+                break;
+            }
+        } while (!empty($posts));
 
         // Record the latest Tumblr post ID to be sync'ed on the blog.
         // (Usefully, Tumblr post ID's are sequential.)
@@ -1420,9 +1515,9 @@ END_HTML;
         switch ($post->type) {
             case 'photo':
                 foreach ($post->photos as $photo) {
-                    $content .= '<img src="' . $photo->original_size->url . '" alt="" />';
-                    $content .= $post->caption;
+                    $content .= '<img src="' . $photo->original_size->url . '" alt="' . $photo->caption. '" />';
                 }
+                $content .= $post->caption;
                 break;
             case 'quote':
                 $content .= '<blockquote>' . $post->text . '</blockquote>';
@@ -1455,6 +1550,10 @@ END_HTML;
     }
 
     private function importPostFromTumblr ($post) {
+        $options = get_option($this->prefix . '_settings');
+        if (!empty($options['debug'])) {
+            error_log(sprintf('Entering importPostFromTumblr, tumblr_post_id=%s', $post->id));
+        }
         $wp_post = array();
         $wp_post['post_content'] = $this->translateTumblrPostContent($post);
         $wp_post['post_title'] = (isset($post->title)) ? $post->title : '';
@@ -1465,7 +1564,6 @@ END_HTML;
         $wp_post['post_date_gmt'] = gmdate('Y-m-d H:i:s', $post->timestamp);
         $wp_post['tags_input'] = $post->tags;
 
-        $options = get_option($this->prefix . '_settings');
         if (!empty($options['import_to_categories'])) {
             $cat_ids = array();
             foreach ($options['import_to_categories'] as $slug) {
@@ -1477,6 +1575,7 @@ END_HTML;
 
         // Remove filtering so we retain audio, video, embeds, etc.
         remove_filter('content_save_pre', 'wp_filter_post_kses');
+        remove_action('save_post', array($this, 'savePost')); // avoid loops during import
         $wp_id = wp_insert_post($wp_post);
         add_filter('content_save_pre', 'wp_filter_post_kses');
         if ($wp_id) {

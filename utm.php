@@ -64,16 +64,17 @@
 		};
 
                 var source = {'官方部落格' : 'official-blog', '廣告' : 'FB1' , '粉絲頁' : 'FBPage', 
-				'電子報' : 'NewsLetter','新聞' : 'iHealthNews', '其他' : 'Others'
+				'電子報' : 'NewsLetter','新聞' : 'iHealthNews','Line':'line', '其他' : 'Others'
 		};
 
                 var medium = { 'official-blog' : medium_init,
-                               'FBPage' : { '早餐吃麥片':'FanPage', '客服或留言': 'fb-reply', '其他免費': 'others'},
+                               'FBPage' : { '早餐吃麥片':'FanPage', '留言回覆': 'fb-reply','訊息':'fb-inbox', '其他免費': 'others'},
 			       'FB1' : { '廣告' : 'FB', '部落客':'blgr'},
                                'NewsLetter' : {'email':'email'},
                                'iHealthNews' : medium_init,
 			       'Others' : {'instagram':'instagram', 'GigaCircle':'gigacircle', 'PTT':'ptt', 
-			       '免費部落客':'free-blogger', 'Line（訊息/主頁/客服）':'line'}
+			       '免費部落客':'free-blogger'},
+                    'line' : {'主頁':'mainPage','訊息':'message','客服':'cusReply','LineQ':'lineQ'}
 								
                                         };
                 var campaignName = {'產品頁面':'', '品牌頁面':'Brand', '活動頁面':'Camp', '產品類別頁':'Cat', '產品屬性標籤' : 'Tag', '首頁' : 'Shop'};

@@ -129,7 +129,7 @@ function wr2x_admin_init() {
             array(
                 'name' => 'image_quality',
                 'label' => __( 'Quality', 'wp-retina-2x' ),
-                'desc' => __( 'Image Compression quality (between 0 and 100).', 'wp-retina-2x' ),
+                'desc' => __( '<br />Image Compression quality (between 0 and 100).<br />That doesn\'t always actually work depending on your hosting service.', 'wp-retina-2x' ),
                 'type' => 'text',
                 'default' => 90
             ),
@@ -141,6 +141,13 @@ function wr2x_admin_init() {
                 'default' => false
             ),
             array(
+                'name' => 'cdn_domain',
+                'label' => __( 'Custom CDN Domain (Pro)', 'wp-retina-2x' ),
+                'desc' => __( '<br />If not empty, your site domain will be replaced with this CDN domain (PictureFill and HTML Rewrite only).', 'wp-retina-2x' ),
+                'type' => 'text',
+                'default' => ""
+            ),
+            array(
                 'name' => 'picture_fill',
                 'label' => '',
                 'desc' => __( '<h2>For PictureFill</h2>', 'wp-retina-2x' ),
@@ -149,14 +156,14 @@ function wr2x_admin_init() {
             array(
                 'name' => 'picturefill_keep_src',
                 'label' => __( 'Keep IMG SRC (Pro)', 'wp-retina-2x' ),
-                'desc' => __( 'With PictureFill, IMG SRCs are replaced by SRC-SET and consequently search engines might not be able to find and reference those images. Keeping it will load images twice for retina devices on old browsers.', 'wp-retina-2x' ),
+                'desc' => __( 'With PictureFill, <b>src</b> tags are replaced by <b>src-set</b> tags and consequently search engines might not be able to find and reference those images. Keeping it will load images twice for retina devices on old browsers.', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),
             array(
                 'name' => 'picturefill_lazysizes',
                 'label' => __( 'Use Lazysizes (Pro)', 'wp-retina-2x' ),
-                'desc' => __( 'Instead of the PictureFill script, the plugin will use Lazysizes. Then your images loaded in a lazy way (when the visitor is getting close to them). Disable the Keep IMG SRC otherwise it doesn\'t make sense.', 'wp-retina-2x' ),
+                'desc' => __( 'HTML will be rewritten to support the lazysizes and the script will be also loaded. The images will be loaded in a lazy way (when the visitor is getting close to them).', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),
@@ -212,7 +219,7 @@ function wr2x_admin_init() {
             array(
                 'name' => 'pro',
                 'label' => '',
-                'desc' => __( sprintf( 'Status: %s<br /><br />With the Pro version, full support for the <b>Full Size Retina</b> will be added. You will also get a new and nice pop-up window with more <b>Details</b> in the Retina dashboard. It is only 5$ a year and works for up to 5 websites.', $pro_status ), 'wp-retina-2x' ),
+                'desc' => __( sprintf( 'Status: %s<br /><br />With the Pro version, full support for the <b>Full Size Retina</b> will be added. You will also get a new and nice pop-up window with more <b>Details</b> in the Retina dashboard.', $pro_status ), 'wp-retina-2x' ),
                 'type' => 'html'
             ),
             array(
